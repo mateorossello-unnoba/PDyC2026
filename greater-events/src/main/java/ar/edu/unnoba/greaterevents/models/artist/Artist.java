@@ -1,10 +1,9 @@
 package ar.edu.unnoba.greaterevents.models.artist;
 
+import ar.edu.unnoba.greaterevents.models.event.Event;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import ar.edu.unnoba.greaterevents.models.event.Event;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
