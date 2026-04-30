@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: greaterevents-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: insecure
+      POSTGRES_DB: pdyc2026
+      TZ: "UTC"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    restart: always
+
+volumes:
+  postgres_data:
