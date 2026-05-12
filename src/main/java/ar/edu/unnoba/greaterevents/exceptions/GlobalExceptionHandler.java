@@ -19,4 +19,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleBusinessRules(IllegalStateException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", exception.getMessage()));
     }
+
+    // Retorna un error 409 con el mensaje de la excepción si se intenta crear un recurso que ya existe
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleAlreadyExists(ResourceAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", exception.getMessage()));
+    }
 }
