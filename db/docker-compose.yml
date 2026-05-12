@@ -1,7 +1,7 @@
 services:
   db:
-    image: postgres:latest
-    container_name: greaterevents-db
+    image: postgres:15
+    container_name: greaterevents_db
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: insecure
@@ -10,8 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql
-    restart: always
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
