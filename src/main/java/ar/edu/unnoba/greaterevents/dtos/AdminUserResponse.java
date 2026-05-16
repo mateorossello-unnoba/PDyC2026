@@ -1,6 +1,7 @@
 package ar.edu.unnoba.greaterevents.dtos;
 
 public record AdminUserResponse (
+    String id,
     String username,
     String email,
     String firstName,

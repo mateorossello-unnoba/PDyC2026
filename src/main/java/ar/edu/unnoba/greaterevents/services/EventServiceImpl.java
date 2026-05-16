@@ -66,7 +66,7 @@ public class EventServiceImpl implements EventService {
     public EventDetailResponse confirmEvent(Long eventId) {
         Event event = getEventByIdOrThrow(eventId);
 
-        if (event.getState() != State.TENTATIVE || event.getStartDate().isBefore(LocalDate.now())) {
+        if (event.getState() != State.TENTATIVE || !event.getStartDate().isAfter(LocalDate.now())) {
             throw new IllegalStateException("Only tentative events with a future start date can be confirmed");
         }
 
@@ -83,7 +83,11 @@ public class EventServiceImpl implements EventService {
             throw new IllegalStateException("Only confirmed or rescheduled events can be rescheduled");
         }
 
-        if (request.startDate().isBefore(LocalDate.now())) {
+        if (event.getStartDate().isBefore(LocalDate.now())) {
+            throw new IllegalStateException("Only events that have not happened yet can be rescheduled");
+        }
+
+        if (!request.startDate().isAfter(LocalDate.now())) {
             throw new IllegalStateException("Rescheduled date must be in the future");
         }
 
