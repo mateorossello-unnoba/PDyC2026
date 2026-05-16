@@ -9,6 +9,8 @@ import jakarta.ws.rs.NotFoundException;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+
+import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -22,7 +24,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     // Métodos auxiliares
     private AdminUserResponse mapToAdminUserResponse(UserRepresentation user) {
-        return new AdminUserResponse(user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName());
+        return new AdminUserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName());
     }
     
     // Método de creación
@@ -42,11 +44,21 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         Response response = keycloak.realm(realm).users().create(user);
 
-        if (response.getStatus() == 409) {
-            throw new ResourceAlreadyExistsException("Admin user with the same username already exists");
-        }
+        try {
+            if (response.getStatus() == 409) {
+                throw new ResourceAlreadyExistsException("Admin user with the same username already exists");
+            }
 
-        return mapToAdminUserResponse(user);
+            if (response.getStatus() != 201) {
+                throw new RuntimeException("Failed to create admin user");
+            }
+
+            String createdId = CreatedResponseUtil.getCreatedId(response);
+            user = keycloak.realm(realm).users().get(createdId).toRepresentation();
+            return mapToAdminUserResponse(user);
+        } finally {
+            response.close();
+        }
     }
 
     // Método de eliminación
