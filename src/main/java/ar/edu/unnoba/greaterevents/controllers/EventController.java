@@ -21,7 +21,7 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventService.createEvent(request));
     }
 
-    // Endpoint de actualización
+    // Endpoints de actualización
     @PutMapping("/{id}")
     public ResponseEntity<EventDetailResponse> updateEvent(@PathVariable Long id, @RequestBody EventCreateRequest request) {
         return ResponseEntity.ok(eventService.updateEvent(id, request));
