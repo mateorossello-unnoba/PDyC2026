@@ -2,23 +2,18 @@ package ar.edu.unnoba.greaterevents.services;
 
 import ar.edu.unnoba.greaterevents.dtos.AdminUserCreateRequest;
 import ar.edu.unnoba.greaterevents.dtos.AdminUserResponse;
-import ar.edu.unnoba.greaterevents.exceptions.ResourceAlreadyExistsException;
 import ar.edu.unnoba.greaterevents.exceptions.ResourceNotFoundException;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.NotFoundException;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-
-import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AdminUserServiceImpl implements AdminUserService {
+    private final KeycloakIntegrationService keycloakIntegrationService;
     private final Keycloak keycloak;
     private final String realm = "unnoba";
 
@@ -29,36 +24,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     
     // Método de creación
     public AdminUserResponse createAdmin(AdminUserCreateRequest request) {
-        UserRepresentation user = new UserRepresentation();
-        user.setUsername(request.username());
-        user.setEmail(request.email());
-        user.setFirstName(request.firstName());
-        user.setLastName(request.lastName());
-        user.setEnabled(true);
-        
-        CredentialRepresentation credential = new CredentialRepresentation();
-        credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setValue(request.password());
-        credential.setTemporary(false);
-        user.setCredentials(Collections.singletonList(credential));
-
-        Response response = keycloak.realm(realm).users().create(user);
-
-        try {
-            if (response.getStatus() == 409) {
-                throw new ResourceAlreadyExistsException("Admin user with the same username already exists");
-            }
-
-            if (response.getStatus() != 201) {
-                throw new RuntimeException("Failed to create admin user");
-            }
-
-            String createdId = CreatedResponseUtil.getCreatedId(response);
-            user = keycloak.realm(realm).users().get(createdId).toRepresentation();
-            return mapToAdminUserResponse(user);
-        } finally {
-            response.close();
-        }
+        return mapToAdminUserResponse(keycloakIntegrationService.createUserInKeycloak(request.username(), request.email(), request.password(), request.firstName(), request.lastName(), "admin"));
     }
 
     // Método de eliminación
