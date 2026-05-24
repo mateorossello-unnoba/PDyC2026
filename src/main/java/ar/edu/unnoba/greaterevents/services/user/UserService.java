@@ -1,4 +1,4 @@
-package ar.edu.unnoba.greaterevents.services;
+package ar.edu.unnoba.greaterevents.services.user;
 
 import ar.edu.unnoba.greaterevents.dtos.artist.ArtistResponse;
 import ar.edu.unnoba.greaterevents.dtos.event.EventDetailResponse;

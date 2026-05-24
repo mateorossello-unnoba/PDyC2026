@@ -1,8 +1,7 @@
-package ar.edu.unnoba.greaterevents.controllers;
+package ar.edu.unnoba.greaterevents.controllers.admin;
 
-import ar.edu.unnoba.greaterevents.dtos.AdminUserCreateRequest;
-import ar.edu.unnoba.greaterevents.dtos.AdminUserResponse;
-import ar.edu.unnoba.greaterevents.services.AdminUserService;
+import ar.edu.unnoba.greaterevents.dtos.admin.*;
+import ar.edu.unnoba.greaterevents.services.admin.*;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

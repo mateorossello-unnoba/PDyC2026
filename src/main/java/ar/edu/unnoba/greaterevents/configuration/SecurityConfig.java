@@ -29,11 +29,13 @@ public class SecurityConfig {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new AuthenticationConverter());
 
+        jwtAuthenticationConverter.setPrincipalClaimName("preferred_username");
+
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/register").permitAll()
-                .requestMatchers(HttpMethod.GET, "/artists/", "/artist/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/artists/", "/artists/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/events/", "/events/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("admin")
                 .anyRequest().authenticated()

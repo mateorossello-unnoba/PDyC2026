@@ -1,4 +1,4 @@
-package ar.edu.unnoba.greaterevents.services;
+package ar.edu.unnoba.greaterevents.services.user;
 
 import ar.edu.unnoba.greaterevents.dtos.artist.ArtistResponse;
 import ar.edu.unnoba.greaterevents.dtos.event.EventDetailResponse;
@@ -8,6 +8,9 @@ import ar.edu.unnoba.greaterevents.models.event.Event;
 import ar.edu.unnoba.greaterevents.models.event.State;
 import ar.edu.unnoba.greaterevents.models.user.*;
 import ar.edu.unnoba.greaterevents.repositories.UserRepository;
+import ar.edu.unnoba.greaterevents.services.KeycloakIntegrationService;
+import ar.edu.unnoba.greaterevents.services.artist.ArtistServiceImpl;
+import ar.edu.unnoba.greaterevents.services.event.EventServiceImpl;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -28,13 +31,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getUserByUsernameOrThrow(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     // Implementación de métodos de la interfaz
     // Método de creación
     public UserDetailResponse createUser(UserCreateRequest request) {
-        if (userRepository.findByUsername(request.username()).isPresent()) {
+        if (userRepository.findByUsernameIgnoreCase(request.username()).isPresent()) {
             throw new IllegalArgumentException("Username already exists");
         }
 
@@ -46,8 +49,8 @@ public class UserServiceImpl implements UserService {
             
         User localUser = new User();
 
-        localUser.setUsername(request.username());
-        localUser.setEmail(request.email());
+        localUser.setUsername(request.username().toLowerCase());
+        localUser.setEmail(request.email().toLowerCase());
 
         localUser = userRepository.save(localUser);
         return UserDetailResponse.fromEntity(localUser);

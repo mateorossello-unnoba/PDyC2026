@@ -1,8 +1,10 @@
-package ar.edu.unnoba.greaterevents.services;
+package ar.edu.unnoba.greaterevents.services.artist;
 
 import ar.edu.unnoba.greaterevents.dtos.artist.*;
+import ar.edu.unnoba.greaterevents.dtos.event.EventListResponse;
 import ar.edu.unnoba.greaterevents.exceptions.ResourceNotFoundException;
 import ar.edu.unnoba.greaterevents.models.artist.*;
+import ar.edu.unnoba.greaterevents.models.event.State;
 import ar.edu.unnoba.greaterevents.repositories.ArtistRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -62,8 +64,21 @@ public class ArtistServiceImpl implements ArtistService {
         return ArtistResponse.fromEntity(getArtistByIdOrThrow(id));
     }
 
+    public List<EventListResponse> getPublicEventsFromArtist(Long artistId) {
+        Artist artist = getArtistByIdOrThrow(artistId);
+        return artist.getEvents().stream()
+            .filter(event -> event.getState() == State.CONFIRMED || event.getState() == State.RESCHEDULED)
+            .map(EventListResponse::fromEntity)
+            .toList();
+    }
+
     public List<ArtistResponse> getArtists(Genre genre) {
         List<Artist> artists = genre != null ? artistRepository.findByGenre(genre) : artistRepository.findAll();
+        return artists.stream().map(ArtistResponse::fromEntity).toList();
+    }
+
+    public List<ArtistResponse> getPublicArtists() {
+        List<Artist> artists = artistRepository.findByActive(true);
         return artists.stream().map(ArtistResponse::fromEntity).toList();
     }
 }
