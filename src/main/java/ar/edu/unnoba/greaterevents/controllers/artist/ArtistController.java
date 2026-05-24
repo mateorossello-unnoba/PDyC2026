@@ -1,8 +1,8 @@
-package ar.edu.unnoba.greaterevents.controllers;
+package ar.edu.unnoba.greaterevents.controllers.artist;
 
 import ar.edu.unnoba.greaterevents.dtos.artist.*;
-import ar.edu.unnoba.greaterevents.models.artist.Genre;
-import ar.edu.unnoba.greaterevents.services.ArtistService;
+import ar.edu.unnoba.greaterevents.models.artist.*;
+import ar.edu.unnoba.greaterevents.services.artist.*;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

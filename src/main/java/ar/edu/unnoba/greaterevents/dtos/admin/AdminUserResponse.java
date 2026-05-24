@@ -1,4 +1,4 @@
-package ar.edu.unnoba.greaterevents.dtos;
+package ar.edu.unnoba.greaterevents.dtos.admin;
 
 public record AdminUserResponse (
     String id,

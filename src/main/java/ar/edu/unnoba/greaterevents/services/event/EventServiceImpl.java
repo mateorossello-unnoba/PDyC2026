@@ -1,12 +1,14 @@
-package ar.edu.unnoba.greaterevents.services;
+package ar.edu.unnoba.greaterevents.services.event;
 
 import ar.edu.unnoba.greaterevents.dtos.event.*;
 import ar.edu.unnoba.greaterevents.exceptions.ResourceNotFoundException;
 import ar.edu.unnoba.greaterevents.models.artist.Artist;
 import ar.edu.unnoba.greaterevents.models.event.*;
 import ar.edu.unnoba.greaterevents.repositories.EventRepository;
+import ar.edu.unnoba.greaterevents.services.artist.ArtistServiceImpl;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -142,8 +144,25 @@ public class EventServiceImpl implements EventService {
         return EventDetailResponse.fromEntity(getEventByIdOrThrow(id));
     }
 
+    public EventDetailResponse getPublicEventById(Long id) {
+        Event event = getEventByIdOrThrow(id);
+
+        if (event.getState() == State.TENTATIVE) {
+            throw new ResourceNotFoundException("Event not found");
+        }
+
+        return EventDetailResponse.fromEntity(event);
+    }
+
     public List<EventListResponse> getEvents(State state) {
         List<Event> events = (state != null) ? eventRepository.findByState(state) : eventRepository.findAll();
         return events.stream().map(EventListResponse::fromEntity).toList();
+    }
+
+    public List<EventListResponse> getPublicEvents() {
+        List<Event> confirmedEvents = eventRepository.findByState(State.CONFIRMED);
+        List<Event> rescheduledEvents = eventRepository.findByState(State.RESCHEDULED);
+
+        return Stream.concat(confirmedEvents.stream(), rescheduledEvents.stream()).map(EventListResponse::fromEntity).toList();
     }
 }

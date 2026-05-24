@@ -1,7 +1,7 @@
-package ar.edu.unnoba.greaterevents.services;
+package ar.edu.unnoba.greaterevents.services.event;
 
 import ar.edu.unnoba.greaterevents.dtos.event.*;
-import ar.edu.unnoba.greaterevents.models.event.State;
+import ar.edu.unnoba.greaterevents.models.event.*;
 import java.util.List;
 
 public interface EventService {
@@ -21,5 +21,7 @@ public interface EventService {
 
     // Métodos de consulta
     EventDetailResponse getEventById(Long id);
+    EventDetailResponse getPublicEventById(Long id);
     List<EventListResponse> getEvents(State state);
+    List<EventListResponse> getPublicEvents();
 }

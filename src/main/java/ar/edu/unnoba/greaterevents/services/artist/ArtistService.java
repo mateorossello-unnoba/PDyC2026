@@ -1,7 +1,8 @@
-package ar.edu.unnoba.greaterevents.services;
+package ar.edu.unnoba.greaterevents.services.artist;
 
 import ar.edu.unnoba.greaterevents.dtos.artist.*;
-import ar.edu.unnoba.greaterevents.models.artist.Genre;
+import ar.edu.unnoba.greaterevents.dtos.event.EventListResponse;
+import ar.edu.unnoba.greaterevents.models.artist.*;
 import java.util.List;
 
 public interface ArtistService {
@@ -16,5 +17,7 @@ public interface ArtistService {
 
     // Métodos de consulta
     ArtistResponse getArtistById(Long id);
+    List<EventListResponse> getPublicEventsFromArtist(Long artistId);
     List<ArtistResponse> getArtists(Genre genre);
+    List<ArtistResponse> getPublicArtists();
 }

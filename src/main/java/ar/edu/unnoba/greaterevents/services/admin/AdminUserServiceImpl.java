@@ -1,8 +1,8 @@
-package ar.edu.unnoba.greaterevents.services;
+package ar.edu.unnoba.greaterevents.services.admin;
 
-import ar.edu.unnoba.greaterevents.dtos.AdminUserCreateRequest;
-import ar.edu.unnoba.greaterevents.dtos.AdminUserResponse;
+import ar.edu.unnoba.greaterevents.dtos.admin.*;
 import ar.edu.unnoba.greaterevents.exceptions.ResourceNotFoundException;
+import ar.edu.unnoba.greaterevents.services.KeycloakIntegrationService;
 import jakarta.ws.rs.NotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

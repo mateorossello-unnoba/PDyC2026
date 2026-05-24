@@ -1,8 +1,8 @@
-package ar.edu.unnoba.greaterevents.controllers;
+package ar.edu.unnoba.greaterevents.controllers.event;
 
 import ar.edu.unnoba.greaterevents.dtos.event.*;
-import ar.edu.unnoba.greaterevents.models.event.State;
-import ar.edu.unnoba.greaterevents.services.EventService;
+import ar.edu.unnoba.greaterevents.models.event.*;
+import ar.edu.unnoba.greaterevents.services.event.*;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

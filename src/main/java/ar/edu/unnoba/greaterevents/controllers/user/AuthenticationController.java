@@ -1,7 +1,7 @@
-package ar.edu.unnoba.greaterevents.controllers;
+package ar.edu.unnoba.greaterevents.controllers.user;
 
 import ar.edu.unnoba.greaterevents.dtos.user.*;
-import ar.edu.unnoba.greaterevents.services.UserService;
+import ar.edu.unnoba.greaterevents.services.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

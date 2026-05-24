@@ -1,11 +1,12 @@
-package ar.edu.unnoba.greaterevents.controllers;
+package ar.edu.unnoba.greaterevents.controllers.user;
 
 import ar.edu.unnoba.greaterevents.dtos.artist.ArtistResponse;
 import ar.edu.unnoba.greaterevents.dtos.event.EventDetailResponse;
 import ar.edu.unnoba.greaterevents.dtos.user.*;
-import ar.edu.unnoba.greaterevents.services.UserService;
+import ar.edu.unnoba.greaterevents.services.user.*;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,11 @@ public class UserController {
 
     // Métodos auxiliares
     private String getAuthenticatedUsername() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        
+        String username = jwt.getClaimAsString("preferred_username");
+
+        return username;
     }
 
     // Endpoints de actualización
