@@ -6,9 +6,9 @@ import ar.edu.unnoba.greaterevents.dtos.user.*;
 import ar.edu.unnoba.greaterevents.services.user.*;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,56 +17,40 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    // Métodos auxiliares
-    private String getAuthenticatedUsername() {
-        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        
-        String username = jwt.getClaimAsString("preferred_username");
-
-        return username;
-    }
-
     // Endpoints de actualización
     @PostMapping("/following")
-    public ResponseEntity<UserDetailResponse> followArtist(@RequestBody FollowArtistRequest request) {
-        String username = getAuthenticatedUsername();
-        return ResponseEntity.ok(userService.followArtist(username, request));
+    public ResponseEntity<UserDetailResponse> followArtist(@RequestBody FollowArtistRequest request, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(userService.followArtist(jwt.getClaimAsString("preferred_username"), request));
     }
 
     @DeleteMapping("/following/{artistId}")
-    public ResponseEntity<UserDetailResponse> unfollowArtist(@PathVariable Long artistId) {
-        String username = getAuthenticatedUsername();
-        return ResponseEntity.ok(userService.unfollowArtist(username, artistId));
+    public ResponseEntity<UserDetailResponse> unfollowArtist(@PathVariable Long artistId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(userService.unfollowArtist(jwt.getClaimAsString("preferred_username"), artistId));
     }
 
     @PostMapping("/favorite-events")
-    public ResponseEntity<UserDetailResponse> addFavoriteEvent(@RequestBody FavoriteEventRequest request) {
-        String username = getAuthenticatedUsername();
-        return ResponseEntity.ok(userService.addFavoriteEvent(username, request));
+    public ResponseEntity<UserDetailResponse> addFavoriteEvent(@RequestBody FavoriteEventRequest request, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(userService.addFavoriteEvent(jwt.getClaimAsString("preferred_username"), request));
     }
 
     @DeleteMapping("/favorite-events/{eventId}")
-    public ResponseEntity<UserDetailResponse> removeFavoriteEvent(@PathVariable Long eventId) {
-        String username = getAuthenticatedUsername();
-        return ResponseEntity.ok(userService.removeFavoriteEvent(username, eventId));
+    public ResponseEntity<UserDetailResponse> removeFavoriteEvent(@PathVariable Long eventId, @AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(userService.removeFavoriteEvent(jwt.getClaimAsString("preferred_username"), eventId));
     }
 
     // Endpoints de consulta
     @GetMapping("/following")
-    public ResponseEntity<List<ArtistResponse>> getFollowedArtists() {
-        String username = getAuthenticatedUsername();
-        return ResponseEntity.ok(userService.getFollowedArtists(username));
+    public ResponseEntity<List<ArtistResponse>> getFollowedArtists(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(userService.getFollowedArtists(jwt.getClaimAsString("preferred_username")));
     }
 
     @GetMapping("/favorite-events")
-    public ResponseEntity<List<EventDetailResponse>> getFavoriteEvents() {
-        String username = getAuthenticatedUsername();
-        return ResponseEntity.ok(userService.getFavoriteEvents(username));
+    public ResponseEntity<List<EventDetailResponse>> getFavoriteEvents(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(userService.getFavoriteEvents(jwt.getClaimAsString("preferred_username")));
     }
 
     @GetMapping("/following/events")
-    public ResponseEntity<List<EventDetailResponse>> getFutureActiveEventsFromFollowedArtistsOrderedByDate() {
-        String username = getAuthenticatedUsername();
-        return ResponseEntity.ok(userService.getFutureActiveEventsFromFollowedArtistsOrderedByDate(username));
+    public ResponseEntity<List<EventDetailResponse>> getFutureActiveEventsFromFollowedArtistsOrderedByDate(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(userService.getFutureActiveEventsFromFollowedArtistsOrderedByDate(jwt.getClaimAsString("preferred_username")));
     }
 }
