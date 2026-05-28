@@ -4,10 +4,15 @@ import ar.edu.unnoba.greaterevents.dtos.event.*;
 import ar.edu.unnoba.greaterevents.exceptions.ResourceNotFoundException;
 import ar.edu.unnoba.greaterevents.models.artist.Artist;
 import ar.edu.unnoba.greaterevents.models.event.*;
+import ar.edu.unnoba.greaterevents.models.user.User;
 import ar.edu.unnoba.greaterevents.repositories.EventRepository;
+import ar.edu.unnoba.greaterevents.repositories.UserRepository;
 import ar.edu.unnoba.greaterevents.services.artist.ArtistServiceImpl;
+import ar.edu.unnoba.greaterevents.services.notification.NotificationServiceImpl;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +21,23 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
+    private final UserRepository userRepository;
     private final ArtistServiceImpl artistService;
+    private final NotificationServiceImpl notificationService;
 
     // Método auxiliar
     public Event getEventByIdOrThrow(Long id) {
         return eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+    }
+
+    private void notifyEventChange(Event event, State previousState) {
+        Set<User> affectedUsers = userRepository.findUsersToNotifyAboutEvent(event.getId());
+
+        CompletableFuture.runAsync(() -> {
+            for (User user : affectedUsers) {
+                notificationService.createNotification(event, user, previousState, event.getState());
+            }
+        });
     }
 
     // Implementación de métodos de la interfaz
@@ -54,6 +71,7 @@ public class EventServiceImpl implements EventService {
 
     public EventDetailResponse cancelEvent(Long eventId) {
         Event event = getEventByIdOrThrow(eventId);
+        State previousState = event.getState();
 
         if (event.getState() == State.CONFIRMED || event.getState() == State.RESCHEDULED) {
             event.setState(State.CANCELLED);
@@ -62,6 +80,7 @@ public class EventServiceImpl implements EventService {
         }
 
         eventRepository.save(event);
+        notifyEventChange(event, previousState);
         return EventDetailResponse.fromEntity(event);
     }
 
@@ -72,9 +91,11 @@ public class EventServiceImpl implements EventService {
             throw new IllegalStateException("Only tentative events with a future start date can be confirmed");
         }
 
+        State previousState = event.getState();
         event.setState(State.CONFIRMED);
 
         eventRepository.save(event);
+        notifyEventChange(event, previousState);
         return EventDetailResponse.fromEntity(event);
     }
 
@@ -93,10 +114,12 @@ public class EventServiceImpl implements EventService {
             throw new IllegalStateException("Rescheduled date must be in the future");
         }
 
+        State previousState = event.getState();
         event.setState(State.RESCHEDULED);
         event.setStartDate(request.startDate());
 
         eventRepository.save(event);
+        notifyEventChange(event, previousState);
         return EventDetailResponse.fromEntity(event);
     }
 
