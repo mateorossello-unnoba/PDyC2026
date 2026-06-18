@@ -19,16 +19,16 @@ spring:
         - TokenRelay
       routes:
         - id: catalog-event-service
-          uri: lb://CATALOG-EVENT-SERVICE
+          uri: lb://catalog-event-service
           predicates:
-            - Path=/admin/users/**,/admin/artists/**,/artists/**,/artists,/admin/events/**,/events/**,/events
+            - Path=/admin/artists/**,/artists/**,/artists,/admin/events/**,/events/**,/events
 
         - id: user-social-service
-          uri: lb://USER-SOCIAL-SERVICE
+          uri: lb://user-social-service
           predicates:
-            - Path=/auth/register,/me/following/**,/me/following,/me/favorite-events/**,/me/favorite-events
+            - Path=/admin/users/**,/admin/users,/auth/register,/me/following/**,/me/following,/me/favorite-events/**,/me/favorite-events
 
         - id: notification-service
-          uri: lb://NOTIFICATION-SERVICE
+          uri: lb://notification-service
           predicates:
             - Path=/me/notifications/**,/me/notifications

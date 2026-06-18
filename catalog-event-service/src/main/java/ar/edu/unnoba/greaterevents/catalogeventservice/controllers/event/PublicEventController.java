@@ -23,4 +23,14 @@ public class PublicEventController {
     public ResponseEntity<List<EventListResponse>> getEvents() {
         return ResponseEntity.ok(eventService.getPublicEvents());
     }
+
+    @GetMapping("/{id}/summary")
+    public ResponseEntity<EventListResponse> getEventSummaryById(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.getPublicEventSummaryById(id));
+    }
+
+    @GetMapping("/artist/{artistId}")
+    public ResponseEntity<List<EventListResponse>> getEventsByArtistId(@PathVariable Long artistId) {
+        return ResponseEntity.ok(eventService.getPublicEventsByArtistId(artistId));
+    }
 }

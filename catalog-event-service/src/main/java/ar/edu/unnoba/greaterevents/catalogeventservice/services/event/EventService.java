@@ -24,4 +24,8 @@ public interface EventService {
     EventDetailResponse getPublicEventById(Long id);
     List<EventListResponse> getEvents(State state);
     List<EventListResponse> getPublicEvents();
+
+    EventListResponse getPublicEventSummaryById(Long id);
+
+    List<EventListResponse> getPublicEventsByArtistId(Long artistId);
 }
