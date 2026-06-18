@@ -10,4 +10,6 @@ public class ApiGatewayApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ApiGatewayApplication.class, args);
 	}
+
+	// TODO: Solucionar mal funcionamiento de la redirección
 }

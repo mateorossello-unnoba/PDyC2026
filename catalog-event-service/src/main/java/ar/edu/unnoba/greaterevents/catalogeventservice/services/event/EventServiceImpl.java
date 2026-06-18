@@ -24,7 +24,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private void notifyEventChange(Event event, State previousState) {
-        // TODO: Comunicación asíncrona publicando un mensaje en el Broker con el event.getId(), previousState y event.getState().
+        // TODO: Comunicación asíncrona publicando un mensaje en el Broker con el event.getId(), previousState y event.getState()
 
         System.out.println("Event change notification sent for event " + event.getId() + " with previous state " + previousState + " and new state " + event.getState());
     }
@@ -176,5 +176,20 @@ public class EventServiceImpl implements EventService {
         List<Event> rescheduledEvents = eventRepository.findByState(State.RESCHEDULED);
 
         return Stream.concat(confirmedEvents.stream(), rescheduledEvents.stream()).map(EventListResponse::fromEntity).toList();
+    }
+
+    public EventListResponse getPublicEventSummaryById(Long id) {
+        Event event = getEventByIdOrThrow(id);
+
+        if (event.getState() == State.TENTATIVE) {
+            throw new ResourceNotFoundException("Event not found");
+        }
+
+        return EventListResponse.fromEntity(event);
+    }
+
+    public List<EventListResponse> getPublicEventsByArtistId(Long artistId) {
+        List<Event> events = eventRepository.findByArtists_IdAndStateIn(artistId, List.of(State.CONFIRMED, State.RESCHEDULED));
+        return events.stream().map(EventListResponse::fromEntity).toList();
     }
 }

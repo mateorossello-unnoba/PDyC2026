@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
 
 eureka:
   client:
@@ -8,10 +8,10 @@ eureka:
 
 spring:
   application:
-    name: catalog-event-service
+    name: user-social-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/catalog_event_db
+    url: jdbc:postgresql://localhost:5432/user_social_db
     username: root
     password: insecure
     driver-class-name: org.postgresql.Driver
@@ -27,3 +27,9 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/unnoba
+
+keycloak-admin:
+  server-url: http://localhost:8080
+  realm: unnoba
+  client-id: pdyc
+  client-secret: Kfs6fbShlz87GUNy9nldFrbINC4Bfems
