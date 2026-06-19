@@ -1,7 +1,7 @@
 package ar.edu.unnoba.greaterevents.catalogeventservice.services.artist;
 
 import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.artist.*;
-import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.EventListResponse;
+import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.models.artist.*;
 import java.util.List;
 

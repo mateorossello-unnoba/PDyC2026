@@ -7,17 +7,22 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+// Permite interactuar con catalog-event-service para obtener información sobre artistas y eventos
 @FeignClient(name = "catalog-event-service")
 public interface CatalogEventClient {
-    @GetMapping("/artists/{id}")
+    // Método para obtener un artista por su ID
+    @GetMapping("/internal/artists/{id}")
     ArtistResponse getArtistById(@PathVariable("id") Long id);
 
-    @GetMapping("/events/{id}")
+    // Método para obtener un evento por su ID
+    @GetMapping("/internal/events/{id}")
     EventDetailResponse getEventById(@PathVariable("id") Long id);
 
-    @GetMapping("/events/{id}/summary")
+    // Método para obtener un resumen de un evento por su ID
+    @GetMapping("/internal/events/{id}/summary")
     EventListResponse getEventSummaryById(@PathVariable("id") Long id);
 
-    @GetMapping("/events/artist/{artistId}")
+    // Método para obtener todos los eventos de un artista dado su ID
+    @GetMapping("/internal/events/artist/{artistId}")
     List<EventListResponse> getEventsByArtistId(@PathVariable("artistId") Long artistId);
 }

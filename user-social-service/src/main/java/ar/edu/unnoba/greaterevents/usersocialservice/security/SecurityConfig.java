@@ -20,11 +20,12 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setPrincipalClaimName("preferred_username");
 
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                .requestMatchers("/admin/users", "/admin/users/**").hasRole("admin")
-                .anyRequest().authenticated()
+                .requestMatchers("/internal/**").permitAll() // Permitir acceso a los endpoints de comunicación interna
+                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll() // Permitir acceso público al endpoint de registro
+                .requestMatchers("/admin/users", "/admin/users/**").hasRole("admin") // Restringir acceso a endpoints de administración solo para usuarios con rol "admin"
+                .anyRequest().authenticated() // Requerir autenticación para cualquier otra solicitud
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
         

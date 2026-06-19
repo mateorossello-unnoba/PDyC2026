@@ -23,6 +23,7 @@ public class KeycloakConfig {
 
     @Bean
     Keycloak keycloak() {
+        // Configura el cliente de Keycloak para autenticarse con las credenciales del cliente
         return KeycloakBuilder.builder()
             .serverUrl(serverUrl)
             .realm(realm)

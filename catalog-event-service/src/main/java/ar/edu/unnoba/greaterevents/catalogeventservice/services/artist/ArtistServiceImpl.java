@@ -1,10 +1,10 @@
 package ar.edu.unnoba.greaterevents.catalogeventservice.services.artist;
 
 import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.artist.*;
-import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.EventListResponse;
+import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.exceptions.ResourceNotFoundException;
 import ar.edu.unnoba.greaterevents.catalogeventservice.models.artist.*;
-import ar.edu.unnoba.greaterevents.catalogeventservice.models.event.State;
+import ar.edu.unnoba.greaterevents.catalogeventservice.models.event.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.repositories.ArtistRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

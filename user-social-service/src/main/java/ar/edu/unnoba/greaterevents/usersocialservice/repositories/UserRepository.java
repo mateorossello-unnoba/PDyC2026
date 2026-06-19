@@ -1,6 +1,6 @@
 package ar.edu.unnoba.greaterevents.usersocialservice.repositories;
 
-import ar.edu.unnoba.greaterevents.usersocialservice.models.user.User;
+import ar.edu.unnoba.greaterevents.usersocialservice.models.user.*;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;

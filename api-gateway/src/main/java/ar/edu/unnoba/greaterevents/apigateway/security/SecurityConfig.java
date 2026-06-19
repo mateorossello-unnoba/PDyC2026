@@ -13,9 +13,9 @@ public class SecurityConfig {
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
-            .csrf(ServerHttpSecurity.CsrfSpec::disable)
-            .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll())
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+            .csrf(ServerHttpSecurity.CsrfSpec::disable) // Deshabilitar CSRF para APIs REST
+            .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll()) // Permitir todas las solicitudes sin autenticación
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); // Configurar JWT para autenticación de recursos
 
         return http.build();
     }

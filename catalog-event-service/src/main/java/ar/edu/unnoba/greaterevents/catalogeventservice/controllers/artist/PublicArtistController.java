@@ -1,7 +1,7 @@
 package ar.edu.unnoba.greaterevents.catalogeventservice.controllers.artist;
 
 import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.artist.*;
-import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.EventListResponse;
+import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.services.artist.*;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
