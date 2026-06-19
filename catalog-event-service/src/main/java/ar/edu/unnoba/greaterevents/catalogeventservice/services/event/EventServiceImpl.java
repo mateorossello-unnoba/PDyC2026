@@ -1,15 +1,18 @@
 package ar.edu.unnoba.greaterevents.catalogeventservice.services.event;
 
+import ar.edu.unnoba.greaterevents.catalogeventservice.configuration.RabbitMQConfig;
 import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.*;
+import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.message.EventStatusChange;
 import ar.edu.unnoba.greaterevents.catalogeventservice.exceptions.ResourceNotFoundException;
-import ar.edu.unnoba.greaterevents.catalogeventservice.models.artist.Artist;
+import ar.edu.unnoba.greaterevents.catalogeventservice.models.artist.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.models.event.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.repositories.EventRepository;
-import ar.edu.unnoba.greaterevents.catalogeventservice.services.artist.ArtistServiceImpl;
+import ar.edu.unnoba.greaterevents.catalogeventservice.services.artist.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final ArtistServiceImpl artistService;
+    private final RabbitTemplate rabbitTemplate;
 
     // Método auxiliar
     public Event getEventByIdOrThrow(Long id) {
@@ -24,9 +28,19 @@ public class EventServiceImpl implements EventService {
     }
 
     private void notifyEventChange(Event event, State previousState) {
-        // TODO: Comunicación asíncrona publicando un mensaje en el Broker con el event.getId(), previousState y event.getState()
+        if (previousState != event.getState() && (event.getState() == State.CANCELLED || event.getState() == State.RESCHEDULED)) {
+            EventStatusChange message = new EventStatusChange(
+                event.getId(),
+                previousState.name(),
+                event.getState().name()
+            );
 
-        System.out.println("Event change notification sent for event " + event.getId() + " with previous state " + previousState + " and new state " + event.getState());
+            rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EXCHANGE_NAME, 
+                RabbitMQConfig.ROUTING_KEY, 
+                message
+            );
+        }
     }
 
     // Implementación de métodos de la interfaz

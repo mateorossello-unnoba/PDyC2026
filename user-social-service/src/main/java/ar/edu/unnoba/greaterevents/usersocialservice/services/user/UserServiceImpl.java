@@ -12,6 +12,8 @@ import ar.edu.unnoba.greaterevents.usersocialservice.services.KeycloakIntegratio
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -130,5 +132,13 @@ public class UserServiceImpl implements UserService {
             .filter(event -> !event.startDate().isBefore(LocalDate.now()) && !event.state().equals(State.CANCELLED.toString()) && !event.state().equals(State.TENTATIVE.toString()))
             .sorted(Comparator.comparing(EventListResponse::startDate))
             .toList();
+    }
+
+    public UserListResponse getUserByUsername(String username) {
+        return UserListResponse.fromEntity(getUserByUsernameOrThrow(username));
+    }
+
+    public Set<UserListResponse> getUsersInterestedInEvent(Long eventId, Set<Long> artistIds) {
+        return userRepository.findUsersToNotifyAboutEvent(eventId, artistIds).stream().map(UserListResponse::fromEntity).collect(Collectors.toSet());
     }
 }

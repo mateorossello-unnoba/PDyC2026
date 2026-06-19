@@ -4,6 +4,7 @@ import ar.edu.unnoba.greaterevents.usersocialservice.dtos.artist.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.dtos.event.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.dtos.user.*;
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
     // Método de creación
@@ -21,4 +22,7 @@ public interface UserService {
     List<ArtistResponse> getFollowedArtists(String username);
     List<EventDetailResponse> getFavoriteEvents(String username);
     List<EventListResponse> getFutureActiveEventsFromFollowedArtistsOrderedByDate(String username);
+
+    UserListResponse getUserByUsername(String username);
+    Set<UserListResponse> getUsersInterestedInEvent(Long eventId, Set<Long> artistIds);
 }
