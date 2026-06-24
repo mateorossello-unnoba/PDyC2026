@@ -15,20 +15,41 @@ spring:
 
   cloud:
     gateway:
-      default-filters:
-        - TokenRelay
-      routes:
-        - id: catalog-event-service
-          uri: lb://catalog-event-service
-          predicates:
-            - Path=/admin/artists/**,/artists/**,/artists,/admin/events/**,/events/**,/events
+      server:
+        webflux:
+          routes:
+            - id: catalog-event-service
+              uri: lb://catalog-event-service
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - "/admin/artists/**"
+                      - "/artists/**"
+                      - "/admin/events/**"
+                      - "/events/**"
+              filters:
+                -name: TokenRelay
 
-        - id: user-social-service
-          uri: lb://user-social-service
-          predicates:
-            - Path=/admin/users/**,/admin/users,/auth/register,/me/following/**,/me/following,/me/favorite-events/**,/me/favorite-events
+            - id: user-social-service
+              uri: lb://user-social-service
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - "/admin/users/**"
+                      - "/auth/register"
+                      - "/me/following/**"
+                      - "/me/favorite-events/**"
+              filters:
+                -name: TokenRelay
 
-        - id: notification-service
-          uri: lb://notification-service
-          predicates:
-            - Path=/me/notifications/**,/me/notifications
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - "/me/notifications/**"
+              filters:
+                -name: TokenRelay
