@@ -28,6 +28,12 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/realms/unnoba
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 keycloak-admin:
   server-url: http://localhost:8080
   realm: unnoba

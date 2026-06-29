@@ -4,11 +4,13 @@ import ar.edu.unnoba.greaterevents.usersocialservice.clients.CatalogEventClient;
 import ar.edu.unnoba.greaterevents.usersocialservice.dtos.artist.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.dtos.event.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.dtos.user.*;
+import ar.edu.unnoba.greaterevents.usersocialservice.exceptions.ResourceAlreadyExistsException;
 import ar.edu.unnoba.greaterevents.usersocialservice.exceptions.ResourceNotFoundException;
 import ar.edu.unnoba.greaterevents.usersocialservice.models.event.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.models.user.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.repositories.UserRepository;
 import ar.edu.unnoba.greaterevents.usersocialservice.services.KeycloakIntegrationService;
+import feign.FeignException;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -44,11 +46,11 @@ public class UserServiceImpl implements UserService {
     // Método de creación
     public UserDetailResponse createUser(UserCreateRequest request) {
         if (userRepository.findByUsernameIgnoreCase(request.username()).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new ResourceAlreadyExistsException("Username already exists");
         }
 
         if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new ResourceAlreadyExistsException("Email already exists");
         }
 
         keycloakIntegrationService.createUserInKeycloak(request.username(), request.email(), request.password(), null, null, null);
@@ -65,7 +67,14 @@ public class UserServiceImpl implements UserService {
     // Métodos de actualización
     public UserDetailResponse followArtist(String username, FollowArtistRequest request) {
         User user = getUserByUsernameOrThrow(username);
-        ArtistResponse artist = catalogEventClient.getArtistById(request.artistId());
+
+        ArtistResponse artist;
+
+        try {
+            artist = catalogEventClient.getArtistById(request.artistId());
+        } catch (FeignException.NotFound exception) {
+            throw new ResourceNotFoundException("Artist not found");
+        }
 
         if (!user.getFollowedArtists().contains(artist.id())) {
             user.getFollowedArtists().add(request.artistId());
@@ -85,7 +94,14 @@ public class UserServiceImpl implements UserService {
 
     public UserDetailResponse addFavoriteEvent(String username, FavoriteEventRequest request) {
         User user = getUserByUsernameOrThrow(username);
-        EventDetailResponse event = catalogEventClient.getEventById(request.eventId());
+
+        EventDetailResponse event;
+
+        try {
+            event = catalogEventClient.getEventById(request.eventId());
+        } catch (FeignException.NotFound exception) {
+            throw new ResourceNotFoundException("Event not found");
+        }
 
         if (!user.getFavoriteEvents().contains(event.id())) {
             user.getFavoriteEvents().add(request.eventId());
