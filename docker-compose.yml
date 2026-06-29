@@ -48,6 +48,19 @@ services:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
 
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq_broker
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   app_postgres_data:
   keycloak_postgres_data:
+  rabbitmq_data:

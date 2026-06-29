@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/me/notifications", "/me/notifications/**").hasRole("user") // Restringir acceso a endpoints de notificaciones solo para usuarios autenticados con rol "user"
+                .requestMatchers("/me/notifications", "/me/notifications/**").authenticated() // Restringir acceso a endpoints de notificaciones solo para usuarios autenticados
                 .anyRequest().authenticated() // Requerir autenticación para cualquier otra solicitud
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
