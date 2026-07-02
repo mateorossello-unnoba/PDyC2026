@@ -29,7 +29,7 @@ spring:
                       - "/admin/events/**"
                       - "/events/**"
               filters:
-                -name: TokenRelay
+                - name: TokenRelay
 
             - id: user-social-service
               uri: lb://user-social-service
@@ -42,7 +42,7 @@ spring:
                       - "/me/following/**"
                       - "/me/favorite-events/**"
               filters:
-                -name: TokenRelay
+                - name: TokenRelay
 
             - id: notification-service
               uri: lb://notification-service
@@ -52,4 +52,4 @@ spring:
                     patterns:
                       - "/me/notifications/**"
               filters:
-                -name: TokenRelay
+                - name: TokenRelay

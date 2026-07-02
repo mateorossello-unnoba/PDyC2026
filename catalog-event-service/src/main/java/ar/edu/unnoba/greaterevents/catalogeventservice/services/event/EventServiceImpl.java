@@ -27,20 +27,41 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
     }
 
-    private void notifyEventChange(Event event, State previousState) {
-        if (previousState != event.getState() && (event.getState() == State.CANCELLED || event.getState() == State.RESCHEDULED)) {
-            EventStatusChange message = new EventStatusChange(
-                event.getId(),
-                previousState.name(),
-                event.getState().name()
-            );
-
-            rabbitTemplate.convertAndSend(
-                RabbitMQConfig.EXCHANGE_NAME, 
-                RabbitMQConfig.ROUTING_KEY, 
-                message
-            );
+    private void notifyEventChange(Event event, State previousState, LocalDate previousStartDate) {
+        State currentState = event.getState();
+        LocalDate currentStartDate = event.getStartDate();
+        
+        if (!shouldNotifyEventChange(previousState, currentState, previousStartDate, currentStartDate)) {
+            return;
         }
+
+        EventStatusChange message = new EventStatusChange(
+            event.getId(),
+            previousState.name(),
+            event.getState().name()
+        );
+
+        rabbitTemplate.convertAndSend(
+            RabbitMQConfig.EXCHANGE_NAME, 
+            RabbitMQConfig.ROUTING_KEY, 
+            message
+        );
+    }
+
+    private boolean shouldNotifyEventChange(State previousState, State currentState, LocalDate previousStartDate, LocalDate currentStartDate) {
+        if (currentState == State.CONFIRMED && previousState != currentState) {
+            return true;
+        }
+        
+        if (currentState == State.CANCELLED && previousState != currentState) {
+            return true;
+        }
+
+        if (currentState == State.RESCHEDULED && !previousStartDate.equals(currentStartDate)) {
+            return true;
+        }
+
+        return false;
     }
 
     // Implementación de métodos de la interfaz
@@ -83,7 +104,7 @@ public class EventServiceImpl implements EventService {
         }
 
         eventRepository.save(event);
-        notifyEventChange(event, previousState);
+        notifyEventChange(event, previousState, event.getStartDate());
         return EventDetailResponse.fromEntity(event);
     }
 
@@ -98,7 +119,7 @@ public class EventServiceImpl implements EventService {
         event.setState(State.CONFIRMED);
 
         eventRepository.save(event);
-        notifyEventChange(event, previousState);
+        notifyEventChange(event, previousState, event.getStartDate());
         return EventDetailResponse.fromEntity(event);
     }
 
@@ -118,11 +139,12 @@ public class EventServiceImpl implements EventService {
         }
 
         State previousState = event.getState();
+        LocalDate previousStartDate = event.getStartDate();
         event.setState(State.RESCHEDULED);
         event.setStartDate(request.startDate());
 
         eventRepository.save(event);
-        notifyEventChange(event, previousState);
+        notifyEventChange(event, previousState, previousStartDate);
         return EventDetailResponse.fromEntity(event);
     }
 
