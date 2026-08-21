@@ -5,6 +5,10 @@ import ar.edu.unnoba.greaterevents.usersocialservice.dtos.event.EventListRespons
 import ar.edu.unnoba.greaterevents.usersocialservice.models.user.User;
 import java.util.List;
 
+/**
+ * DTO de respuesta detallada para un usuario.
+ */
+
 public record UserDetailResponse (
     String username,
     String email,

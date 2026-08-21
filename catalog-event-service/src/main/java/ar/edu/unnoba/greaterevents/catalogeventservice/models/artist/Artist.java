@@ -8,6 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entidad que representa a un artista en el sistema.
+ */
+
 @Entity
 @Table(name = "artists")
 @Getter 

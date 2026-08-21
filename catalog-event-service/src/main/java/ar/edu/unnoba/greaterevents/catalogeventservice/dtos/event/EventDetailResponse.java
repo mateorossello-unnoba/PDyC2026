@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * DTO de respuesta detallada para un evento.
+ */
+
 public record EventDetailResponse(
     Long id,
     String name,

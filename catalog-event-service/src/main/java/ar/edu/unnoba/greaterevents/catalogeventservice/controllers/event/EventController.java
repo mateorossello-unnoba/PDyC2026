@@ -9,19 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador para la gestión de eventos.
+ */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/events")
 public class EventController {
     private final EventService eventService;
 
-    // Endpoint de creación
+    // Endpoint de creación.
     @PostMapping
     public ResponseEntity<EventDetailResponse> createEvent(@RequestBody EventCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventService.createEvent(request));
     }
 
-    // Endpoints de actualización
+    // Endpoints de actualización.
     @PutMapping("/{id}")
     public ResponseEntity<EventDetailResponse> updateEvent(@PathVariable Long id, @RequestBody EventCreateRequest request) {
         return ResponseEntity.ok(eventService.updateEvent(id, request));
@@ -54,14 +58,14 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
-    // Endpoint de eliminación
+    // Endpoint de eliminación.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Endpoints de consulta
+    // Endpoints de consulta.
     @GetMapping("/{id}")
     public ResponseEntity<EventDetailResponse> getEventById(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventById(id));

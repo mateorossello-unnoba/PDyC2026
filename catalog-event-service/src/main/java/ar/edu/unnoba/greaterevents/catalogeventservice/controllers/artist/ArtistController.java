@@ -9,32 +9,36 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador para la gestión de artistas.
+ */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/artists")
 public class ArtistController {
     private final ArtistService artistService;
 
-    // Endpoint de creación
+    // Endpoint de creación.
     @PostMapping
     public ResponseEntity<ArtistResponse> createArtist(@RequestBody ArtistCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(artistService.createArtist(request));
     }
 
-    // Endpoint de actualización
+    // Endpoint de actualización.
     @PutMapping("/{id}")
     public ResponseEntity<ArtistResponse> updateArtist(@PathVariable Long id, @RequestBody ArtistCreateRequest request) {
         return ResponseEntity.ok(artistService.updateArtist(id, request));
     }
 
-    // Endpoint de eliminación
+    // Endpoint de eliminación.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArtist(@PathVariable Long id) {
         artistService.deleteArtist(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Endpoints de consulta
+    // Endpoints de consulta.
     @GetMapping("/{id}")
     public ResponseEntity<ArtistResponse> getArtistById(@PathVariable Long id) {
         return ResponseEntity.ok(artistService.getArtistById(id));

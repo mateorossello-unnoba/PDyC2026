@@ -4,11 +4,15 @@ import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.models.event.*;
 import java.util.List;
 
+/**
+ * Interfaz del servicio de eventos.
+ */
+
 public interface EventService {
-    // Método de creación
+    // Método de creación.
     EventDetailResponse createEvent(EventCreateRequest request);
 
-    // Métodos de actualización
+    // Métodos de actualización.
     EventDetailResponse updateEvent(Long id, EventCreateRequest request);
     EventDetailResponse cancelEvent(Long eventId);
     EventDetailResponse confirmEvent(Long eventId);
@@ -16,10 +20,10 @@ public interface EventService {
     void addArtistToEvent(Long eventId, EventAddArtistRequest request);
     void removeArtistFromEvent(Long eventId, Long artistId);
 
-    // Método de eliminación
+    // Método de eliminación.
     void deleteEvent(Long id);
 
-    // Métodos de consulta
+    // Métodos de consulta.
     EventDetailResponse getEventById(Long id);
     EventDetailResponse getPublicEventById(Long id);
     List<EventListResponse> getEvents(State state);

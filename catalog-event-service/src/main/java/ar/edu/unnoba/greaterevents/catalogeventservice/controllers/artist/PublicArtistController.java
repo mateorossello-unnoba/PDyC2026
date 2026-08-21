@@ -8,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador público para la gestión de artistas.
+ */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/artists")

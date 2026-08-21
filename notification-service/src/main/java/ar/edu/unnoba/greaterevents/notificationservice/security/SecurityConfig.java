@@ -8,6 +8,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuración de seguridad para el acceso a notification-service.
+ */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -19,10 +23,10 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setPrincipalClaimName("preferred_username");
 
         http
-            .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST
+            .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST.
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/me/notifications", "/me/notifications/**").authenticated() // Restringir acceso a endpoints de notificaciones solo para usuarios autenticados
-                .anyRequest().authenticated() // Requerir autenticación para cualquier otra solicitud
+                .requestMatchers("/me/notifications", "/me/notifications/**").authenticated() // Restringir acceso a endpoints de notificaciones solo para usuarios autenticados.
+                .anyRequest().authenticated() // Requerir autenticación para cualquier otra solicitud.
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
         

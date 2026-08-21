@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entidad que representa una notificación en el sistema.
+ */
+
 @Entity
 @Table(name = "notifications")
 @Getter 
