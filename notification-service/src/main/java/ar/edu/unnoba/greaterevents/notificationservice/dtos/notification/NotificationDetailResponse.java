@@ -7,19 +7,26 @@ import ar.edu.unnoba.greaterevents.notificationservice.models.notification.Notif
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 
+/**
+ * DTO de respuesta detallada para una notificación.
+ */
+
 public record NotificationDetailResponse (
     Long id,
+    Long eventId,
+    String username,
     EventDetailResponse event,
     UserListResponse user,
     State previousState,
     State currentState,
     LocalDateTime createdAt,
-    @JsonProperty("is_read")
-    Boolean read
+    @JsonProperty("is_read") Boolean read
 ) {
     public static NotificationDetailResponse fromEntity(Notification notification, EventDetailResponse event, UserListResponse user) {
         return new NotificationDetailResponse(
             notification.getId(),
+            notification.getEventId(),
+            notification.getUsername(),
             event,
             user,
             notification.getPreviousState(),

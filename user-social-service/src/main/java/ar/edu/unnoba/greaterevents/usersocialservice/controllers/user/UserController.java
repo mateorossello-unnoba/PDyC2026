@@ -11,13 +11,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador para la gestión de usuarios.
+ */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/me")
 public class UserController {
     private final UserService userService;
 
-    // Endpoints de actualización
+    // Endpoints de actualización.
     @PostMapping("/following")
     public ResponseEntity<UserDetailResponse> followArtist(@RequestBody FollowArtistRequest request, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(userService.followArtist(jwt.getClaimAsString("preferred_username"), request));
@@ -38,7 +42,7 @@ public class UserController {
         return ResponseEntity.ok(userService.removeFavoriteEvent(jwt.getClaimAsString("preferred_username"), eventId));
     }
 
-    // Endpoints de consulta
+    // Endpoints de consulta.
     @GetMapping("/following")
     public ResponseEntity<List<ArtistResponse>> getFollowedArtists(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(userService.getFollowedArtists(jwt.getClaimAsString("preferred_username")));

@@ -4,6 +4,10 @@ import ar.edu.unnoba.greaterevents.catalogeventservice.models.event.Event;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
+/**
+ * DTO de respuesta resumida para un evento.
+ */
+
 public record EventListResponse(
     Long id,
     String name,

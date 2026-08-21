@@ -7,11 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * Repositorio para la entidad User.
+ */
+
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsernameIgnoreCase(String username);
     Optional<User> findByEmail(String email);
 
-    // Método para encontrar usuarios que marcaron un evento como favorito
-    @Query("SELECT DISTINCT u FROM User u LEFT JOIN u.favoriteEvents fe LEFT JOIN u.followedArtists fa WHERE fe = :eventId OR fa IN :artistIds")
+    // Encontrar usuarios que marcaron un evento como favorito o que siguen a un artista relacionado con el evento.
+    @Query("SELECT DISTINCT u FROM User u LEFT JOIN u.favoriteEvents favoriteEvent LEFT JOIN u.followedArtists followedArtist WHERE favoriteEvent = :eventId OR followedArtist IN :artistIds")
     Set<User> findUsersToNotifyAboutEvent(@Param("eventId") Long eventId, @Param("artistIds") Set<Long> artistIds);
 }

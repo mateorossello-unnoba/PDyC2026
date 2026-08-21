@@ -33,3 +33,26 @@ spring:
     port: 5672
     username: guest
     password: guest
+
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      catalog-event-service:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 20s
+        permittedNumberOfCallsInHalfOpenState: 2
+      user-social-service:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 20s
+        permittedNumberOfCallsInHalfOpenState: 2

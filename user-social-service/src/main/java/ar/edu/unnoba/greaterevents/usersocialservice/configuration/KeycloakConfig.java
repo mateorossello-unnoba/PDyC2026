@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuración de Keycloak para la autenticación de user-social-service.
+ */
+
 @Configuration
 public class KeycloakConfig {
     @Value("${keycloak-admin.server-url}")
@@ -23,7 +27,7 @@ public class KeycloakConfig {
 
     @Bean
     Keycloak keycloak() {
-        // Configura el cliente de Keycloak para autenticarse con las credenciales del cliente
+        // Configura el cliente de Keycloak para autenticarse con las credenciales del cliente.
         return KeycloakBuilder.builder()
             .serverUrl(serverUrl)
             .realm(realm)

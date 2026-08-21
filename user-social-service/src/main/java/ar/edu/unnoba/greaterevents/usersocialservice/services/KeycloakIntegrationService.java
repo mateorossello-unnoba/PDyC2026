@@ -11,11 +11,15 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
+/**
+ * Servicio para la integración con Keycloak, encargado de crear usuarios y asignarles roles.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class KeycloakIntegrationService {
     private final Keycloak keycloak;
-    private final String realm = "unnoba";
+    private static final String REALM = "unnoba";
 
     public UserRepresentation createUserInKeycloak(String username, String email, String password, String firstName, String lastName, String roleName) {
         UserRepresentation user = new UserRepresentation();
@@ -23,11 +27,11 @@ public class KeycloakIntegrationService {
         user.setEmail(email);
         user.setEnabled(true);
 
-        if (firstName != null && !firstName.isEmpty()) {
+        if (firstName != null && !firstName.isBlank()) {
             user.setFirstName(firstName);
         }
 
-        if (lastName != null && !lastName.isEmpty()) {
+        if (lastName != null && !lastName.isBlank()) {
             user.setLastName(lastName);
         }
 
@@ -37,25 +41,25 @@ public class KeycloakIntegrationService {
         credential.setTemporary(false);
         user.setCredentials(Collections.singletonList(credential));
 
-        Response response = keycloak.realm(realm).users().create(user);
+        Response response = keycloak.realm(REALM).users().create(user);
 
         try {
             if (response.getStatus() == 409) {
-                throw new ResourceAlreadyExistsException("User with the same username already exists");
+                throw new ResourceAlreadyExistsException("User already exists in Keycloak.");
             }
 
             if (response.getStatus() != 201) {
-                throw new RuntimeException("Failed to create user in Keycloak");
+                throw new RuntimeException("Failed to create user in Keycloak. Status: " + response.getStatus() + ".");
             }
 
             String createdId = CreatedResponseUtil.getCreatedId(response);
             
-            if (roleName != null && !roleName.isEmpty()) {
-                RoleRepresentation role = keycloak.realm(realm).roles().get(roleName).toRepresentation();
-                keycloak.realm(realm).users().get(createdId).roles().realmLevel().add(Collections.singletonList(role));
+            if (roleName != null && !roleName.isBlank()) {
+                RoleRepresentation role = keycloak.realm(REALM).roles().get(roleName).toRepresentation();
+                keycloak.realm(REALM).users().get(createdId).roles().realmLevel().add(Collections.singletonList(role));
             }
 
-            return keycloak.realm(realm).users().get(createdId).toRepresentation();
+            return keycloak.realm(REALM).users().get(createdId).toRepresentation();
         } finally {
             response.close();
         }

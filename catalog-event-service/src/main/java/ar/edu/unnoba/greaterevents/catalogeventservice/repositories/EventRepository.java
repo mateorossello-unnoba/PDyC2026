@@ -4,6 +4,10 @@ import ar.edu.unnoba.greaterevents.catalogeventservice.models.event.*;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * Repositorio para la entidad Event.
+ */
+
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByState(State state);
 

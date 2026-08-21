@@ -7,12 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador interno para la gestión de eventos.
+ */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/internal/events")
 public class InternalEventController {
     private final EventService eventService;
 
+    // Endpoints de consulta.
     @GetMapping("/{id}")
     public ResponseEntity<EventDetailResponse> getEventById(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventById(id));

@@ -9,6 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configuración de seguridad para el acceso a catalog-event-service.
+ */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -20,13 +24,13 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setPrincipalClaimName("preferred_username");
 
         http
-            .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST
+            .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF para APIs REST.
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/internal/**").permitAll() // Permitir acceso a los endpoints de comunicación interna
-                .requestMatchers(HttpMethod.GET, "/artists", "/artists/**").permitAll() // Permitir acceso público a los endpoints de artistas
-                .requestMatchers(HttpMethod.GET, "/events", "/events/**").permitAll() // Permitir acceso público a los endpoints de eventos
-                .requestMatchers("/admin/**").hasRole("admin") // Restringir acceso a endpoints de administración solo para usuarios con rol "admin"
-                .anyRequest().authenticated()
+                .requestMatchers("/internal/**").permitAll() // Permitir acceso a los endpoints de comunicación interna.
+                .requestMatchers(HttpMethod.GET, "/artists", "/artists/**").permitAll() // Permitir acceso público a los endpoints de artistas.
+                .requestMatchers(HttpMethod.GET, "/events", "/events/**").permitAll() // Permitir acceso público a los endpoints de eventos.
+                .requestMatchers("/admin/**").hasRole("admin") // Restringir acceso a endpoints de administración solo para usuarios con "admin" como rol.
+                .anyRequest().authenticated() // Requerir autenticación para cualquier otra solicitud.
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
         

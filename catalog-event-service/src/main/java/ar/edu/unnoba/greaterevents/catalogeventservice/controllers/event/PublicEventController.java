@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador público para la gestión de eventos.
+ */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")

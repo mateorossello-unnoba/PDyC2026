@@ -34,8 +34,24 @@ spring:
     username: guest
     password: guest
 
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
 keycloak-admin:
   server-url: http://localhost:8080
   realm: unnoba
   client-id: pdyc
   client-secret: Kfs6fbShlz87GUNy9nldFrbINC4Bfems
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      catalog-event-service:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 20s
+        permittedNumberOfCallsInHalfOpenState: 2

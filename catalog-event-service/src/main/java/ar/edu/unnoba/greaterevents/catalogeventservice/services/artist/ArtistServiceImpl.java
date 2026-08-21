@@ -10,18 +10,25 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementación del servicio de artistas.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class ArtistServiceImpl implements ArtistService {
     private final ArtistRepository artistRepository;
 
-    // Métodos auxiliares
+    // Métodos auxiliares.
     public Artist getArtistByIdOrThrow(Long id) {
-        return artistRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Artist not found"));
+        return artistRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Artist not found."));
     }
 
-    // Implementación de métodos de la interfaz
-    // Método de creación
+    //
+    // Implementación de métodos de la interfaz.
+    //
+
+    // Método de creación.
     public ArtistResponse createArtist(ArtistCreateRequest request) {
         Artist artist = new Artist();
 
@@ -32,12 +39,12 @@ public class ArtistServiceImpl implements ArtistService {
         return ArtistResponse.fromEntity(artist);
     }
 
-    // Método de actualización
+    // Método de actualización.
     public ArtistResponse updateArtist(Long id, ArtistCreateRequest request) {
         Artist artist = getArtistByIdOrThrow(id);
 
         if (!artist.getEvents().isEmpty()) {
-            throw new IllegalStateException("Cannot update artist associated with events");
+            throw new IllegalStateException("Cannot update artist associated with events.");
         }
         
         artist.setName(request.name());
@@ -47,7 +54,7 @@ public class ArtistServiceImpl implements ArtistService {
         return ArtistResponse.fromEntity(artist);
     }
 
-    // Método de eliminación
+    // Método de eliminación.
     public void deleteArtist(Long id) {
         Artist artist = getArtistByIdOrThrow(id);
 
@@ -59,7 +66,7 @@ public class ArtistServiceImpl implements ArtistService {
         }
     }
 
-    // Métodos de consulta
+    // Métodos de consulta.
     public ArtistResponse getArtistById(Long id) {
         return ArtistResponse.fromEntity(getArtistByIdOrThrow(id));
     }
@@ -67,9 +74,7 @@ public class ArtistServiceImpl implements ArtistService {
     public List<EventListResponse> getPublicEventsFromArtist(Long artistId) {
         Artist artist = getArtistByIdOrThrow(artistId);
         return artist.getEvents().stream()
-            .filter(event -> event.getState() == State.CONFIRMED || event.getState() == State.RESCHEDULED)
-            .map(EventListResponse::fromEntity)
-            .toList();
+            .filter(event -> event.getState() == State.CONFIRMED || event.getState() == State.RESCHEDULED).map(EventListResponse::fromEntity).toList();
     }
 
     public List<ArtistResponse> getArtists(Genre genre) {

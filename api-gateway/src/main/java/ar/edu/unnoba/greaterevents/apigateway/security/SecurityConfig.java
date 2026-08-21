@@ -7,15 +7,19 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+/**
+ * Configuración de seguridad para el acceso a api-gateway.
+ */
+
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
-            .csrf(ServerHttpSecurity.CsrfSpec::disable) // Deshabilitar CSRF para APIs REST
-            .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll()) // Permitir todas las solicitudes sin autenticación
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); // Configurar JWT para autenticación de recursos
+            .csrf(ServerHttpSecurity.CsrfSpec::disable) // Deshabilitar CSRF para APIs REST.
+            .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll()) // Permitir todas las solicitudes sin autenticación.
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); // Configurar JWT para autenticación de recursos.
 
         return http.build();
     }

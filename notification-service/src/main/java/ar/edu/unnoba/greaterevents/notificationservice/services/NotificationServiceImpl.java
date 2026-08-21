@@ -14,9 +14,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementación del servicio de notificaciones.
+ */
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
@@ -24,13 +30,18 @@ public class NotificationServiceImpl implements NotificationService {
     private final CatalogEventClient catalogEventClient;
     private final UserSocialClient userSocialClient;
 
-    // Métodos auxiliares
+    // Métodos auxiliares.
     public Notification getNotificationByIdOrThrow(Long id) {
-        return notificationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
+        return notificationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Notification not found."));
     }
 
     public void processEventStatusChange(Long eventId, State previousState, State currentState) {
         EventDetailResponse event = catalogEventClient.getEventById(eventId);
+
+        if (event == null) {
+            log.warn("Event with ID {} not found or Catalog Event Service is unavailable.", eventId);
+            return;
+        }
 
         Set<Long> artistIds = event.artists().stream().map(ArtistResponse::id).collect(Collectors.toSet());
         Set<UserListResponse> users = userSocialClient.getInterestedUsers(eventId, artistIds);
@@ -50,8 +61,11 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    // Implementación de métodos de la interfaz
-    // Método de creación
+    //
+    // Implementación de métodos de la interfaz.
+    //
+    
+    // Método de creación.
     public void createNotification(Long eventId, String username, State previousState, State currentState) {
         Notification notification = new Notification();
         notification.setEventId(eventId);
@@ -62,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
-    // Método de actualización
+    // Método de actualización.
     public NotificationDetailResponse markAsRead(String username, Long id, NotificationUpdateRequest request) {
         Notification notification = getNotificationByIdOrThrow(id);
 
@@ -75,22 +89,22 @@ public class NotificationServiceImpl implements NotificationService {
 
             return NotificationDetailResponse.fromEntity(notification, event, user);
         } else {
-            throw new IllegalStateException("You can only update your own notifications");
+            throw new IllegalStateException("You can only update your own notifications.");
         }
     }
 
-    // Método de eliminación
+    // Método de eliminación.
     public void deleteNotification(String username, Long id) {
         Notification notification = getNotificationByIdOrThrow(id);
 
         if (notification.getUsername().equalsIgnoreCase(username)) {
             notificationRepository.delete(notification);
         } else {
-            throw new IllegalStateException("You can only delete your own notifications");
+            throw new IllegalStateException("You can only delete your own notifications.");
         }
     }
 
-    // Método de consulta
+    // Método de consulta.
     public List<NotificationDetailResponse> getMyNotifications(String username) {
         UserListResponse user = userSocialClient.getUserByUsername(username);
 

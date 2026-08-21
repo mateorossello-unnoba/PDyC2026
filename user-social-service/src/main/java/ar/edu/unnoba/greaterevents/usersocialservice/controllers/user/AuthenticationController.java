@@ -6,13 +6,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controlador para la autenticación de usuarios.
+ */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthenticationController {
     private final UserService userService;
 
-    // Endpoints de actualización
+    // Endpoint de creación.
     @PostMapping("/register")
     public ResponseEntity<UserDetailResponse> registerUser(@RequestBody UserCreateRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
