@@ -1,10 +1,13 @@
 package ar.edu.unnoba.greaterevents.usersocialservice.exceptions;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 /**
  * Administra las excepciones y devuelve respuestas HTTP adecuadas según el tipo de excepción.
@@ -16,6 +19,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, String>> handleBusinessRules(IllegalStateException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", exception.getMessage()));
+    }
+
+    // Retorna un error 400 con los mensajes de validación si hay errores en los argumentos del método.
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException exception) {
+        Map<String, String> errors = exception.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        FieldError::getDefaultMessage,
+                        (firstMessage, secondMessage) -> firstMessage
+                ));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     // Retorna un error 404 con el mensaje de la excepción si no se encuentra un recurso.

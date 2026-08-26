@@ -1,6 +1,8 @@
 package ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
@@ -8,7 +10,7 @@ import java.time.LocalDate;
  */
 
 public record EventCreateRequest(
-    String name,
-    String description,
-    @JsonProperty("start_date") LocalDate startDate
+    @NotBlank String name,
+    @NotBlank String description,
+    @NotNull @JsonProperty("start_date") LocalDate startDate
 ) {}

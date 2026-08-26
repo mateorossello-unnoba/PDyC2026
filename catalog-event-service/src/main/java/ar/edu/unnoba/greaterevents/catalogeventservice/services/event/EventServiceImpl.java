@@ -195,7 +195,7 @@ public class EventServiceImpl implements EventService {
     public EventDetailResponse getPublicEventById(Long id) {
         Event event = getEventByIdOrThrow(id);
 
-        if (event.getState() == State.TENTATIVE) {
+        if (event.getState() != State.CONFIRMED && event.getState() != State.RESCHEDULED) {
             throw new ResourceNotFoundException("Event not found.");
         }
 
@@ -217,7 +217,7 @@ public class EventServiceImpl implements EventService {
     public EventListResponse getPublicEventSummaryById(Long id) {
         Event event = getEventByIdOrThrow(id);
 
-        if (event.getState() == State.TENTATIVE) {
+        if (event.getState() != State.CONFIRMED && event.getState() != State.RESCHEDULED) {
             throw new ResourceNotFoundException("Event not found.");
         }
 

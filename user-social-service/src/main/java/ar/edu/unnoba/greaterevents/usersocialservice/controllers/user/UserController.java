@@ -4,6 +4,7 @@ import ar.edu.unnoba.greaterevents.usersocialservice.dtos.artist.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.dtos.event.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.dtos.user.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.services.user.*;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class UserController {
 
     // Endpoints de actualización.
     @PostMapping("/following")
-    public ResponseEntity<UserDetailResponse> followArtist(@RequestBody FollowArtistRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<UserDetailResponse> followArtist(@Valid @RequestBody FollowArtistRequest request, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(userService.followArtist(jwt.getClaimAsString("preferred_username"), request));
     }
 
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/favorite-events")
-    public ResponseEntity<UserDetailResponse> addFavoriteEvent(@RequestBody FavoriteEventRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<UserDetailResponse> addFavoriteEvent(@Valid @RequestBody FavoriteEventRequest request, @AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(userService.addFavoriteEvent(jwt.getClaimAsString("preferred_username"), request));
     }
 

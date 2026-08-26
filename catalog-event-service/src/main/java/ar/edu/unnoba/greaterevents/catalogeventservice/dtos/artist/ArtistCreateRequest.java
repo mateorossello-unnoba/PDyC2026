@@ -1,10 +1,12 @@
 package ar.edu.unnoba.greaterevents.catalogeventservice.dtos.artist;
 
+import jakarta.validation.constraints.NotBlank;
+
 /**
  * DTO de solicitud para la creación de un artista.
  */
 
 public record ArtistCreateRequest(
-    String name,
-    String genre
+    @NotBlank String name,
+    @NotBlank String genre
 ) {}
