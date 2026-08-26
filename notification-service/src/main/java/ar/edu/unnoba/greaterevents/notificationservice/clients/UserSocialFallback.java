@@ -1,7 +1,6 @@
 package ar.edu.unnoba.greaterevents.notificationservice.clients;
 
 import ar.edu.unnoba.greaterevents.notificationservice.dtos.user.*;
-import java.util.Collections;
 import java.util.Set;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +15,6 @@ public class UserSocialFallback implements UserSocialClient {
 
     @Override
     public Set<UserListResponse> getInterestedUsers(Long eventId, Set<Long> artistIds) {
-        return Collections.emptySet();
+        return null;
     } 
 }
