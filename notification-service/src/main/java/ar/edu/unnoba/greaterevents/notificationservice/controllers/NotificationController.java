@@ -2,6 +2,7 @@ package ar.edu.unnoba.greaterevents.notificationservice.controllers;
 
 import ar.edu.unnoba.greaterevents.notificationservice.dtos.notification.*;
 import ar.edu.unnoba.greaterevents.notificationservice.services.*;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class NotificationController {
 
     // Endpoint de actualización.
     @PatchMapping("/{id}")
-    public ResponseEntity<NotificationDetailResponse> markAsRead(@PathVariable Long id, @RequestBody NotificationUpdateRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<NotificationDetailResponse> markAsRead(@PathVariable Long id, @Valid @RequestBody NotificationUpdateRequest request, @AuthenticationPrincipal Jwt jwt) {
         String username = jwt.getClaimAsString("preferred_username");
         return ResponseEntity.ok(notificationService.markAsRead(username, id, request));
     }

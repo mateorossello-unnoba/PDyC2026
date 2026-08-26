@@ -2,6 +2,7 @@ package ar.edu.unnoba.greaterevents.usersocialservice.controllers.admin;
 
 import ar.edu.unnoba.greaterevents.usersocialservice.dtos.admin.*;
 import ar.edu.unnoba.greaterevents.usersocialservice.services.admin.*;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class AdminUserController {
 
     // Endpoint de creación.
     @PostMapping
-    public ResponseEntity<AdminUserResponse> createAdmin(@RequestBody AdminUserCreateRequest request) {
+    public ResponseEntity<AdminUserResponse> createAdmin(@Valid @RequestBody AdminUserCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(adminUserService.createAdmin(request));
     }
 

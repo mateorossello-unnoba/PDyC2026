@@ -3,6 +3,7 @@ package ar.edu.unnoba.greaterevents.catalogeventservice.controllers.artist;
 import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.artist.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.models.artist.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.services.artist.*;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,13 +22,13 @@ public class ArtistController {
 
     // Endpoint de creación.
     @PostMapping
-    public ResponseEntity<ArtistResponse> createArtist(@RequestBody ArtistCreateRequest request) {
+    public ResponseEntity<ArtistResponse> createArtist(@Valid @RequestBody ArtistCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(artistService.createArtist(request));
     }
 
     // Endpoint de actualización.
     @PutMapping("/{id}")
-    public ResponseEntity<ArtistResponse> updateArtist(@PathVariable Long id, @RequestBody ArtistCreateRequest request) {
+    public ResponseEntity<ArtistResponse> updateArtist(@PathVariable Long id, @Valid @RequestBody ArtistCreateRequest request) {
         return ResponseEntity.ok(artistService.updateArtist(id, request));
     }
 

@@ -3,6 +3,7 @@ package ar.edu.unnoba.greaterevents.catalogeventservice.controllers.event;
 import ar.edu.unnoba.greaterevents.catalogeventservice.dtos.event.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.models.event.*;
 import ar.edu.unnoba.greaterevents.catalogeventservice.services.event.*;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,13 +22,13 @@ public class EventController {
 
     // Endpoint de creación.
     @PostMapping
-    public ResponseEntity<EventDetailResponse> createEvent(@RequestBody EventCreateRequest request) {
+    public ResponseEntity<EventDetailResponse> createEvent(@Valid @RequestBody EventCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventService.createEvent(request));
     }
 
     // Endpoints de actualización.
     @PutMapping("/{id}")
-    public ResponseEntity<EventDetailResponse> updateEvent(@PathVariable Long id, @RequestBody EventCreateRequest request) {
+    public ResponseEntity<EventDetailResponse> updateEvent(@PathVariable Long id, @Valid @RequestBody EventCreateRequest request) {
         return ResponseEntity.ok(eventService.updateEvent(id, request));
     }
 
@@ -42,12 +43,12 @@ public class EventController {
     }
 
     @PutMapping("/{eventId}/rescheduled")
-    public ResponseEntity<EventDetailResponse> rescheduleEvent(@PathVariable Long eventId, @RequestBody EventRescheduleRequest request) {
+    public ResponseEntity<EventDetailResponse> rescheduleEvent(@PathVariable Long eventId, @Valid @RequestBody EventRescheduleRequest request) {
         return ResponseEntity.ok(eventService.rescheduleEvent(eventId, request));
     }
 
     @PostMapping("/{eventId}/artists")
-    public ResponseEntity<Void> addArtistToEvent(@PathVariable Long eventId, @RequestBody EventAddArtistRequest request) {
+    public ResponseEntity<Void> addArtistToEvent(@PathVariable Long eventId, @Valid @RequestBody EventAddArtistRequest request) {
         eventService.addArtistToEvent(eventId, request);
         return ResponseEntity.ok().build();
     }
