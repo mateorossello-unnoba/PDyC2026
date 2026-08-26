@@ -10,12 +10,14 @@ import ar.edu.unnoba.greaterevents.notificationservice.exceptions.ResourceNotFou
 import ar.edu.unnoba.greaterevents.notificationservice.models.event.*;
 import ar.edu.unnoba.greaterevents.notificationservice.models.notification.*;
 import ar.edu.unnoba.greaterevents.notificationservice.repositories.NotificationRepository;
+import ar.edu.unnoba.greaterevents.notificationservice.repositories.PendingNotificationRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
+    private final PendingNotificationRepository pendingNotificationRepository;
     private final CatalogEventClient catalogEventClient;
     private final UserSocialClient userSocialClient;
 
@@ -36,15 +39,26 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public void processEventStatusChange(Long eventId, State previousState, State currentState) {
+        if (!createNotification(eventId, previousState, currentState)) {
+            savePendingNotification(eventId, previousState, currentState);
+        }
+    }
+
+    private boolean createNotification(Long eventId, State previousState, State currentState) {
         EventDetailResponse event = catalogEventClient.getEventById(eventId);
 
         if (event == null) {
-            log.warn("Event with ID {} not found or Catalog Event Service is unavailable.", eventId);
-            return;
+            log.warn("Catalog Event Service is unavailable. Pending notification will be saved for event with ID {}: {} -> {}", eventId, previousState, currentState);
+            return false;
         }
 
         Set<Long> artistIds = event.artists().stream().map(ArtistResponse::id).collect(Collectors.toSet());
         Set<UserListResponse> users = userSocialClient.getInterestedUsers(eventId, artistIds);
+        
+        if (users == null) {
+            log.warn("User Social Service is unavailable. Pending notification will be saved for event with ID {}: {} -> {}", eventId, previousState, currentState);
+            return false;
+        }
 
         List<Notification> notifications = users.stream().map(user -> {
             Notification notification = new Notification();
@@ -59,6 +73,28 @@ public class NotificationServiceImpl implements NotificationService {
         if (!notifications.isEmpty()) {
             notificationRepository.saveAll(notifications);
         }
+
+        return true;
+    }
+
+    private void savePendingNotification(Long eventId, State previousState, State currentState) {
+        PendingNotification pendingNotification = new PendingNotification();
+        pendingNotification.setEventId(eventId);
+        pendingNotification.setPreviousState(previousState);
+        pendingNotification.setCurrentState(currentState);
+        pendingNotification.setCreatedAt(LocalDateTime.now());
+        pendingNotificationRepository.save(pendingNotification);
+
+        log.info("Pending notification saved for event with ID {}: {} -> {}", eventId, previousState, currentState);
+    }
+
+    @Scheduled(fixedDelayString = "3600000")
+    public void retryPendingNotifications() {
+        pendingNotificationRepository.findAllByOrderByCreatedAtAsc().forEach(pendingNotification -> {
+            if (createNotification(pendingNotification.getEventId(), pendingNotification.getPreviousState(), pendingNotification.getCurrentState())) {
+                pendingNotificationRepository.delete(pendingNotification);
+            }
+        });
     }
 
     //
