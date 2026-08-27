@@ -1,0 +1,44 @@
+package ar.edu.unnoba.greaterevents.notificationservice.controllers;
+
+import ar.edu.unnoba.greaterevents.notificationservice.dtos.notification.*;
+import ar.edu.unnoba.greaterevents.notificationservice.services.*;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
+
+/**
+ * Controlador para la gestión de notificaciones.
+ */
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/me/notifications")
+public class NotificationController {
+    private final NotificationService notificationService;
+
+    // Endpoint de actualización.
+    @PatchMapping("/{id}")
+    public ResponseEntity<NotificationDetailResponse> markAsRead(@PathVariable Long id, @Valid @RequestBody NotificationUpdateRequest request, @AuthenticationPrincipal Jwt jwt) {
+        String username = jwt.getClaimAsString("preferred_username");
+        return ResponseEntity.ok(notificationService.markAsRead(username, id, request));
+    }
+
+    // Endpoint de eliminación.
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotification(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
+        String username = jwt.getClaimAsString("preferred_username");
+        notificationService.deleteNotification(username, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Endpoint de consulta.
+    @GetMapping
+    public ResponseEntity<List<NotificationDetailResponse>> getMyNotifications(@AuthenticationPrincipal Jwt jwt) {
+        String username = jwt.getClaimAsString("preferred_username");
+        return ResponseEntity.ok(notificationService.getMyNotifications(username));
+    }
+}

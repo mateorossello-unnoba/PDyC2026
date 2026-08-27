@@ -1,0 +1,55 @@
+server:
+  port: 8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/unnoba
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: catalog-event-service
+              uri: lb://catalog-event-service
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - "/admin/artists/**"
+                      - "/artists/**"
+                      - "/admin/events/**"
+                      - "/events/**"
+              filters:
+                - name: TokenRelay
+
+            - id: user-social-service
+              uri: lb://user-social-service
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - "/admin/users/**"
+                      - "/auth/register"
+                      - "/me/following/**"
+                      - "/me/favorite-events/**"
+              filters:
+                - name: TokenRelay
+
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - name: Path
+                  args:
+                    patterns:
+                      - "/me/notifications/**"
+              filters:
+                - name: TokenRelay
